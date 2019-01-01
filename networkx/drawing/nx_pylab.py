@@ -26,6 +26,7 @@ from networkx.utils import is_string_like
 from networkx.drawing.layout import shell_layout, \
     circular_layout, kamada_kawai_layout, spectral_layout, \
     spring_layout, random_layout
+from numbers import Number
 
 __all__ = ['draw',
            'draw_networkx',
@@ -179,7 +180,7 @@ def draw_networkx(G, pos=None, arrows=True, with_labels=True, **kwds):
        Size of nodes.  If an array is specified it must be the
        same length as nodelist.
 
-    node_color : color string, or array of floats, (default='r')
+    node_color : color string, or array of floats, (default='#1f78b4')
        Node color. Can be a single color format string,
        or a  sequence of colors with the same length as nodelist.
        If numeric values are specified they will be mapped to
@@ -284,7 +285,7 @@ def draw_networkx(G, pos=None, arrows=True, with_labels=True, **kwds):
 def draw_networkx_nodes(G, pos,
                         nodelist=None,
                         node_size=300,
-                        node_color='r',
+                        node_color='#1f78b4',
                         node_shape='o',
                         alpha=1.0,
                         cmap=None,
@@ -319,7 +320,7 @@ def draw_networkx_nodes(G, pos,
        same length as nodelist.
 
     node_color : color string, or array of floats
-       Node color. Can be a single color format string (default='r'),
+       Node color. Can be a single color format string (default='#1f78b4'),
        or a  sequence of colors with the same length as nodelist.
        If numeric values are specified they will be mapped to
        colors using the cmap and vmin,vmax parameters.  See
@@ -505,7 +506,7 @@ def draw_networkx_edges(G, pos,
     Notes
     -----
     For directed graphs, arrows are drawn at the head end.  Arrows can be
-    turned off with keyword arrows=False. Be sure to include `node_size' as a
+    turned off with keyword arrows=False. Be sure to include `node_size` as a
     keyword argument; arrows are drawn considering the size of nodes.
 
     Examples
@@ -608,7 +609,7 @@ def draw_networkx_edges(G, pos,
         # r7184 and r7189 (June 6 2009). We should then not set the alpha
         # value globally, since the user can instead provide per-edge alphas
         # now.  Only set it globally if provided as a scalar.
-        if cb.is_numlike(alpha):
+        if isinstance(alpha, Number):
             edge_collection.set_alpha(alpha)
 
         if edge_colors is None:
@@ -728,6 +729,8 @@ def draw_networkx_labels(G, pos,
 
     labels : dictionary, optional (default=None)
        Node labels in a dictionary keyed by node of text labels
+       Node-keys in labels should appear as keys in `pos`.
+       If needed use: `{n:lab for n,lab in labels.items() if n in pos}`
 
     font_size : int
        Font size for text labels (default=12)
@@ -1092,7 +1095,6 @@ def apply_alpha(colors, alpha, elem_list, cmap=None, vmin=None, vmax=None):
         Array containing RGBA format values for each of the node colours.
 
     """
-    import numbers
     from itertools import islice, cycle
 
     try:
@@ -1104,7 +1106,7 @@ def apply_alpha(colors, alpha, elem_list, cmap=None, vmin=None, vmax=None):
 
     # If we have been provided with a list of numbers as long as elem_list,
     # apply the color mapping.
-    if len(colors) == len(elem_list) and isinstance(colors[0], numbers.Number):
+    if len(colors) == len(elem_list) and isinstance(colors[0], Number):
         mapper = cm.ScalarMappable(cmap=cmap)
         mapper.set_clim(vmin, vmax)
         rgba_colors = mapper.to_rgba(colors)
@@ -1124,7 +1126,7 @@ def apply_alpha(colors, alpha, elem_list, cmap=None, vmin=None, vmax=None):
         # rgba_colors) is the same as the number of elements, resize the array,
         # to avoid it being interpreted as a colormap by scatter()
         if len(alpha) > len(rgba_colors) or rgba_colors.size == len(elem_list):
-            rgba_colors.resize((len(elem_list), 4))
+            rgba_colors = np.resize(rgba_colors, (len(elem_list), 4))
             rgba_colors[1:, 0] = rgba_colors[0, 0]
             rgba_colors[1:, 1] = rgba_colors[0, 1]
             rgba_colors[1:, 2] = rgba_colors[0, 2]

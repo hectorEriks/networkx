@@ -101,6 +101,7 @@ is partially historical, and now, mostly arbitrary.
 - Alejandro Weinstein
 - Dustin Smith
 - Mathieu Larose
+- Romain Fontugne
 - Vincent Gauthier
 - chebee7i, GitHub: `chebee7i <https://github.com/chebee7i>`_
 - Jeffrey Finkelstein
@@ -116,6 +117,10 @@ is partially historical, and now, mostly arbitrary.
 - Andre Weltsch
 - Lewis Robbins
 - Mads Jensen, Github: `atombrella <https://github.com/atombrella>`_
+- Edward L. Platt, `elplatt <https://elplatt.com>`_
+- James Owen, Github: `leamingrad <https://github.com/leamingrad>`_
+- Robert Gmyr, Github: `gmyr <https://github.com/gmyr>`_
+- Mike Trenfield
 
 Support
 -------

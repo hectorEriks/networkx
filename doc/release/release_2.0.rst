@@ -30,7 +30,7 @@ API Changes
   With the release of NetworkX 2.0 we are moving towards a view/iterator reporting API.
   We used to have two methods for the same property of the graph, one that returns a
   list and one that returns an iterator. With 2.0 we have replaced them with a view.
-  A view is a read-only object that is quick to create, automatically updated, and 
+  A view is a read-only object that is quick to create, automatically updated, and
   provides basic access like iteration, membership and set operations where appropriate.
   For example, ``G.nodes()`` used to return a list and ``G.nodes_iter()`` an iterator.
   Now ``G.nodes()`` returns a view and ``G.nodes_iter()`` is removed. ``G.degree()``
@@ -59,7 +59,7 @@ API Changes
     >>> G.nodes[3]
     {'color': 'blue'}
     >>> G.nodes & {3, 4, 5}
-    set([3, 4])
+    {3, 4}
 
   The following methods have changed:
 
@@ -199,6 +199,11 @@ API Changes
 * [`#2620 <https://github.com/networkx/networkx/pull/2620>`_]
   Removed ``draw_nx``, please use ``draw`` or ``draw_networkx``.
 
+* [`#1662 <https://github.com/networkx/networkx/pull/1662>`_]
+  Rewrote ``topolgical_sort`` as a generator.  It no longer accepts
+  ``reverse`` or ``nbunch`` arguments and is slightly faster.
+  Added ``lexicographical_topological_sort``, which accepts a key.
+
 Deprecations
 ------------
 
@@ -300,6 +305,7 @@ Contributors to this release
 - thegreathippo
 - vpodpecan
 - yash14123
+- Neil Girdhar
 
 Pull requests merged in this release
 ------------------------------------
@@ -497,3 +503,4 @@ Pull requests merged in this release
 - Prep beta release (#2624)
 - Refactor travis tests and deploy docs with travis (#2647)
 - matplotlib 2.1 deprecated is_string_like (#2659)
+- topolgical_sort, lexicographical_topological_sort (#1662)

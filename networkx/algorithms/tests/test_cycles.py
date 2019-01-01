@@ -24,7 +24,7 @@ class TestCycles:
         if len(b) != n:
             return False
         l = a + a
-        return any(l[i:i + n] == b for i in range(2 * n - n + 1))
+        return any(l[i:i + n] == b for i in range(n))
 
     def test_cycle_basis(self):
         G = self.G
@@ -59,6 +59,7 @@ class TestCycles:
         G = nx.DiGraph(edges)
         cc = sorted(nx.simple_cycles(G))
         ca = [[0], [0, 1, 2], [0, 2], [1, 2], [2]]
+        assert_equal(len(cc), len(ca))
         for c in cc:
             assert_true(any(self.is_cyclic_permutation(c, rc) for rc in ca))
 
@@ -81,6 +82,7 @@ class TestCycles:
         assert_true(self.is_cyclic_permutation(c[0], [1, 2, 3]))
         nx.add_cycle(G, [10, 20, 30])
         cc = sorted(nx.simple_cycles(G))
+        assert_equal(len(cc), 2)
         ca = [[1, 2, 3], [10, 20, 30]]
         for c in cc:
             assert_true(any(self.is_cyclic_permutation(c, rc) for rc in ca))
@@ -157,14 +159,47 @@ class TestFindCycle(object):
         self.nodes = [0, 1, 2, 3]
         self.edges = [(-1, 0), (0, 1), (1, 0), (1, 0), (2, 1), (3, 1)]
 
-    def test_graph(self):
+    def test_graph_nocycle(self):
         G = nx.Graph(self.edges)
         assert_raises(nx.exception.NetworkXNoCycle, find_cycle, G, self.nodes)
+
+    def test_graph_cycle(self):
+        G = nx.Graph(self.edges)
+        G.add_edge(2, 0)
+        x = list(find_cycle(G, self.nodes))
+        x_ = [(0, 1), (1, 2), (2, 0)]
+        assert_equal(x, x_)
+
+    def test_graph_orientation_none(self):
+        G = nx.Graph(self.edges)
+        G.add_edge(2, 0)
+        x = list(find_cycle(G, self.nodes, orientation=None))
+        x_ = [(0, 1), (1, 2), (2, 0)]
+        assert_equal(x, x_)
+
+    def test_graph_orientation_original(self):
+        G = nx.Graph(self.edges)
+        G.add_edge(2, 0)
+        x = list(find_cycle(G, self.nodes, orientation='original'))
+        x_ = [(0, 1, FORWARD), (1, 2, FORWARD), (2, 0, FORWARD)]
+        assert_equal(x, x_)
 
     def test_digraph(self):
         G = nx.DiGraph(self.edges)
         x = list(find_cycle(G, self.nodes))
         x_ = [(0, 1), (1, 0)]
+        assert_equal(x, x_)
+
+    def test_digraph_orientation_none(self):
+        G = nx.DiGraph(self.edges)
+        x = list(find_cycle(G, self.nodes, orientation=None))
+        x_ = [(0, 1), (1, 0)]
+        assert_equal(x, x_)
+
+    def test_digraph_orientation_original(self):
+        G = nx.DiGraph(self.edges)
+        x = list(find_cycle(G, self.nodes, orientation='original'))
+        x_ = [(0, 1, FORWARD), (1, 0, FORWARD)]
         assert_equal(x, x_)
 
     def test_multigraph(self):
@@ -186,6 +221,12 @@ class TestFindCycle(object):
         G = nx.DiGraph(self.edges)
         x = list(find_cycle(G, self.nodes, orientation='ignore'))
         x_ = [(0, 1, FORWARD), (1, 0, FORWARD)]
+        assert_equal(x, x_)
+
+    def test_digraph_reverse(self):
+        G = nx.DiGraph(self.edges)
+        x = list(find_cycle(G, self.nodes, orientation='reverse'))
+        x_ = [(1, 0, REVERSE), (0, 1, REVERSE)]
         assert_equal(x, x_)
 
     def test_multidigraph_ignore(self):

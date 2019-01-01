@@ -92,7 +92,7 @@ EdgeDataView
 
     The argument `nbunch` restricts edges to those incident to nodes in nbunch.
 """
-from collections import Mapping, Set, Iterable
+from collections.abc import Mapping, Set, Iterable
 import networkx as nx
 
 __all__ = ['NodeView', 'NodeDataView',
@@ -1122,7 +1122,7 @@ class EdgeView(OutEdgeView):
     >>> assert((0, 1) in EVnbunch)   #  nbunch is ignored in __contains__
     >>> for u, v in EVnbunch: assert(u == 2 or v == 2)
 
-    >>> MG = nx.path_graph(4, create_using=nx.MultiGraph())
+    >>> MG = nx.path_graph(4, create_using=nx.MultiGraph)
     >>> EVmulti = MG.edges(keys=True)
     >>> (2, 3, 0) in EVmulti
     True
@@ -1140,7 +1140,8 @@ class EdgeView(OutEdgeView):
     dataview = EdgeDataView
 
     def __len__(self):
-        return sum(len(nbrs) + (n in nbrs) for n, nbrs in self._nodes_nbrs()) // 2
+        num_nbrs = (len(nbrs) + (n in nbrs) for n, nbrs in self._nodes_nbrs())
+        return sum(num_nbrs) // 2
 
     def __iter__(self):
         seen = set()

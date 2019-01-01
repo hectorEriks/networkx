@@ -195,7 +195,7 @@ def read_gml(path, label='label', destringizer=None):
     For additional documentation on the GML file format, please see the
     `GML website <http://www.infosun.fim.uni-passau.de/Graphlet/GML/gml-tr.html>`_.
 
-    See the module docstring :mod:`networkx.readwrite.gml` for additional details.
+    See the module docstring :mod:`networkx.readwrite.gml` for more details.
 
     Examples
     --------
@@ -265,7 +265,7 @@ def parse_gml(lines, label='label', destringizer=None):
     For additional documentation on the GML file format, please see the
     `GML website <http://www.infosun.fim.uni-passau.de/Graphlet/GML/gml-tr.html>`_.
 
-    See the module docstring :mod:`networkx.readwrite.gml` for additional details.
+    See the module docstring :mod:`networkx.readwrite.gml` for more details.
     """
     def decode_line(line):
         if isinstance(line, bytes):
@@ -415,17 +415,18 @@ def parse_gml_lines(lines, label, destringizer):
 
     nodes = graph.get('node', [])
     mapping = {}
-    labels = set()
+    node_labels = set()
     for i, node in enumerate(nodes if isinstance(nodes, list) else [nodes]):
         id = pop_attr(node, 'node', 'id', i)
         if id in G:
             raise NetworkXError('node id %r is duplicated' % (id,))
-        if label != 'id':
-            label = pop_attr(node, 'node', 'label', i)
-            if label in labels:
-                raise NetworkXError('node label %r is duplicated' % (label,))
-            labels.add(label)
-            mapping[id] = label
+        if label is not None and label != 'id':
+            node_label = pop_attr(node, 'node', label, i)
+            if node_label in node_labels:
+                raise NetworkXError('node label %r is duplicated' %
+                                    (node_label,))
+            node_labels.add(node_label)
+            mapping[id] = node_label
         G.add_node(id, **node)
 
     edges = graph.get('edge', [])
@@ -455,7 +456,7 @@ Hint:  If this is a multigraph, add "multigraph 1" to the header of the file."""
                     (i, source, '->' if directed else '--', target, key))
             G.add_edge(source, target, key, **edge)
 
-    if label != 'id':
+    if label is not None and label != 'id':
         G = nx.relabel_nodes(G, mapping)
     return G
 
@@ -611,7 +612,7 @@ def generate_gml(G, stringizer=None):
     For additional documentation on the GML file format, please see the
     `GML website <http://www.infosun.fim.uni-passau.de/Graphlet/GML/gml-tr.html>`_.
 
-    See the module docstring :mod:`networkx.readwrite.gml` for additional details.
+    See the module docstring :mod:`networkx.readwrite.gml` for more details.
 
     Examples
     --------
@@ -793,10 +794,13 @@ def write_gml(G, path, stringizer=None):
     specification.  For other data types, you need to explicitly supply a
     `stringizer`/`destringizer`.
 
+    Note that while we allow non-standard GML to be read from a file, we make
+    sure to write GML format. In particular, underscores are not allowed in
+    attribute names.
     For additional documentation on the GML file format, please see the
     `GML website <http://www.infosun.fim.uni-passau.de/Graphlet/GML/gml-tr.html>`_.
 
-    See the module docstring :mod:`networkx.readwrite.gml` for additional details.
+    See the module docstring :mod:`networkx.readwrite.gml` for more details.
 
     Examples
     --------

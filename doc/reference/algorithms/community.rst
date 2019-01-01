@@ -32,6 +32,14 @@ K-Clique
 
    k_clique_communities
 
+Modularity-based communities
+----------------------------
+.. automodule:: networkx.algorithms.community.modularity_max
+.. autosummary::
+   :toctree: generated/
+   
+   greedy_modularity_communities
+
 Label propagation
 -----------------
 .. automodule:: networkx.algorithms.community.label_propagation
@@ -43,7 +51,7 @@ Label propagation
 
 Fluid Communities
 -----------------
-.. automodule:: networkx.algorithms.community.asyn_fluidc
+.. automodule:: networkx.algorithms.community.asyn_fluid
 .. autosummary::
    :toctree: generated/
 
